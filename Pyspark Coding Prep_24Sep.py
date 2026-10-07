@@ -175,3 +175,17 @@ def extract_phone_num(text):
     return address,phone
 
 #print(extract_phone_num("32, Smoky Street, Bangalore 560066 {8971212121}"))
+
+# COMMAND ----------
+
+from pyspark.sql.types import StringType,StructField,StructType,IntegerType
+
+schema=StructType([
+    StructField("Address",StringType(), True),
+    StructField("Phone",StringType(),True)
+])
+
+extract_udf=F.udf(extract_phone_num,schema)
+
+result_df=data_df.withColumn("Extracted",extract_udf(F.col("address_phone")))\
+    .select("name","address_phone","Extracted.Address","Extracted.Phone").show(truncate=False)
