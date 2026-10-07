@@ -1,4 +1,8 @@
 # Databricks notebook source
+# /// script
+# [tool.databricks.environment]
+# environment_version = "6"
+# ///
 #Given a DataFrame of transactions (user_id, ts, amount), compute total amount per user for transactions in the last 7 days.
 
 transactions_data = [
@@ -150,7 +154,24 @@ data = [
 ]
 
 data_df=spark.createDataFrame(data,["name","address_phone"])
-#data_df.show(truncate=False)
+data_df.show(truncate=False)
 
-x=re.search(r"\{(\d*)\}","32, Smoky Street, Bangalore 560066 {8971212121}")
-print(x.group(1),x.group(0))
+# COMMAND ----------
+
+import re
+
+x = re.search(r"\{(\d*)\}","32, Smoky Street, Bangalore 560066 {8971212121}")
+print(x.group(0),x.group(1))
+
+
+# COMMAND ----------
+
+def extract_phone_num(text):
+    phone_match=re.search(r"\{(\d*)\}",text)
+    phone=phone_match.group(1) if phone_match else ""
+    
+    clean_add=re.sub(r"\{(\d*)\}","",text)
+    address=clean_add
+    return address,phone
+
+#print(extract_phone_num("32, Smoky Street, Bangalore 560066 {8971212121}"))
